@@ -1,4 +1,16 @@
 /* Mobile */
+.flash-message {
+  @apply p-4 mb-4 rounded text-center;
+}
+
+.flash-message.error {
+  @apply bg-red-100 text-red-700 border border-red-400;
+}
+
+.flash-message.success {
+  @apply bg-green-100 text-green-700 border border-green-400;
+}
+
 @media screen and (max-width: 428px) {
   section{
     padding-bottom: 100px;

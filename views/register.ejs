@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register</title>
+    <link rel="stylesheet" href="../stylesheets/styles.css" />
+
+    <link rel="stylesheet" href="../stylesheets/animations.css" />
+    <link rel="stylesheet" href="../stylesheets/responsive.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    style="
+      background-image: url(../images/van-gogh-almond-blossom-pzkdt1ub1mjh2yhf.jpg);
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    "
+  >
+    <section id="join-us">
+      <div class="section-box">
+        <div class="content-wrap">
+          <h3 class="section-sub">Register Page</h3>
+          <h2 class="section-title">Artimora</h2>
+
+          <!-- Flash messages -->
+          <% if (messages.error) { %>
+          <div class="flash-message error"><%= messages.error %></div>
+          <% } %> <% if (messages.success) { %>
+          <div class="flash-message success"><%= messages.success %></div>
+          <% } %>
+
+          <form action="/register" method="post" class="join-form">
+            <input
+              type="text"
+              class="input-1 i2"
+              name="name"
+              placeholder="Your Name"
+            />
+            <input
+              type="email"
+              class="input-1 i2"
+              name="email"
+              placeholder="Your Email"
+            />
+            <input
+              type="password"
+              class="input-1 i3"
+              name="password"
+              placeholder="Enter Password"
+            />
+            <input
+              type="password"
+              class="input-1 i3"
+              name="password2"
+              placeholder="Confirm Password"
+            />
+            <button type="submit" class="submit-btn">Register</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
