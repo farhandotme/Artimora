@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Artimora - Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+      <div
+        class="container mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <h1 class="text-3xl font-bold text-blue-600">
+          <a href="/">ARTIMORA</a>
+        </h1>
+        <nav>
+          <ul class="flex space-x-6">
+            <li>
+              <a href="#" class="text-gray-700 hover:text-blue-600">Home</a>
+            </li>
+            <li>
+              <a href="#" class="text-gray-700 hover:text-blue-600">Shop</a>
+            </li>
+            <li>
+              <a href="#" class="text-gray-700 hover:text-blue-600">About</a>
+            </li>
+            <li>
+              <a href="#" class="text-gray-700 hover:text-blue-600">Contact</a>
+            </li>
+          </ul>
+        </nav>
+        <div>
+          <button
+            class="bg-blue-600 text-white px-3 py-1.5 text-sm rounded-md hover:bg-blue-700"
+          >
+            Cart
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+      <h2 class="text-3xl font-bold text-gray-800 text-center mb-6">
+        Featured Products
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% products.forEach(product => { %>
+          <div class="bg-white p-4 w-80 shadow-lg rounded-lg overflow-hidden">
+            <div class="w-full h-80">
+              <img
+                src="data:<%= product.image.contentType %>;base64,<%= product.image.data.toString('base64') %>"
+                alt="<%= product.name %>"
+                class="w-full h-full object-cover object-top"
+              />
+            </div>
+            <div class="p-4">
+              <h3 class="text-lg font-semibold text-gray-800"><%= product.name %></h3>
+              <p class="text-gray-600 mb-2">₹<%= product.price %></p>
+              <p class="text-gray-600 mb-4"><%= product.details %></p>
+              <button
+                class="mt-4 bg-blue-600 text-white px-3 py-1.5 text-sm rounded-md hover:bg-blue-700"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6">
+      <div class="container mx-auto text-center">
+        <p>&copy; 2024 Artimora. All rights reserved.</p>
+      </div>
+    </footer>
+  </body>
+</html>

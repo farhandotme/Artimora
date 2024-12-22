@@ -7,7 +7,10 @@ const cookieParser = require("cookie-parser");
 const connectionDb = require("./DB/connectionDb.js");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const multer = require("multer");
 const userModel = require("./models/userModel.js");
+const productModel = require("./models/productModel.js"); // Assuming you have a Product model
+const isloggedin = require("./middlewares/isloggedin.js");
 
 dotenv.config({ path: "./.env" }); // Load environment variables first
 
@@ -29,6 +32,10 @@ app.use(cookieParser());
 // Connect to the database
 connectionDb();
 
+// Multer setup for file uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
 // Main page
 app.get("/", (req, res) => {
   res.render("index");
@@ -40,7 +47,6 @@ app.get("/register", (req, res) => {
 });
 
 // Post register page
-
 app.post("/register", async (req, res) => {
   const { name, email, password, password2 } = req.body;
   if (!name || !email || !password || !password2) {
@@ -73,29 +79,15 @@ app.post("/register", async (req, res) => {
   }
 });
 
-// GET LOGIN
-app.get("/login", (req, res) => {
-  let success_msg = req.flash("success");
-  let login_error = req.flash("login-error");
-  res.render("login", { success_msg, login_error });
-});
-
-// Login page
-app.get("/login", (req, res) => {
-  const success = req.flash("success");
-  const errors = req.flash("error");
-  res.render("login", { success, errors });
-});
-
 // Get login page
 app.get("/login", (req, res) => {
   res.render("login");
 });
 
+// Post login page
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
-  // Check if all fields are filled
   if (!email || !password) {
     req.flash("error", "All fields are required");
     return res.redirect("/login");
@@ -114,6 +106,12 @@ app.post("/login", async (req, res) => {
       return res.redirect("/login");
     }
 
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    res.cookie("token", token, { httpOnly: true });
+
     req.flash("success", "Login successful");
     res.redirect("/homePage");
   } catch (error) {
@@ -123,12 +121,61 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/homePage", (req, res) => {
-  res.render("homePage");
+app.get("/addDetails", (req, res) => {
+  res.render("inputDetails");
+});
+
+app.get("/logout", (req, res) => {
+  res.clearCookie("token");
+  res.redirect("/");
+});
+
+app.get("/homePage", isloggedin, async (req, res) => {
+  try {
+    const products = await productModel.find();
+    res.render("homePage", { products });
+  } catch (error) {
+    console.error(error);
+    req.flash("error", "Something went wrong. Please try again.");
+    res.redirect("/");
+  }
+});
+
+// Post create product
+app.post("/create", upload.single("image"), async (req, res) => {
+  const { name, details, price } = req.body;
+  const image = req.file;
+
+  if (!name || !details || !price || !image) {
+    req.flash("error", "All fields are required");
+    return res.redirect("/addDetails");
+  }
+
+  try {
+    const newProduct = new productModel({
+      name,
+      details,
+      price,
+      image: {
+        data: image.buffer,
+        contentType: image.mimetype,
+      },
+    });
+
+    await newProduct.save();
+
+    req.flash("success", "Product created successfully");
+    res.redirect("/homePage");
+  } catch (error) {
+    console.error(error);
+    req.flash("error", "Something went wrong. Please try again.");
+    res.redirect("/addDetails");
+  }
 });
 
 const port = process.env.PORT || 3000;
 
-app.listen(3000, () => {
-  console.log("App listening on port http://localhost:3000");
+app.listen(port, () => {
+  console.log(`App listening on port http://localhost:${port}`);
 });
+
