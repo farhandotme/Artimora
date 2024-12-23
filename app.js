@@ -199,7 +199,16 @@ app.post("/addToCart/:id", isloggedin, async (req, res) => {
       req.session.cart = [];
     }
 
-    req.session.cart.push(product);
+    req.session.cart.push({
+      _id: product._id,
+      name: product.name,
+      price: product.price,
+      details: product.details,
+      image: {
+        data: product.image.data.toString("base64"),
+        contentType: product.image.contentType,
+      },
+    });
     req.flash("success", "Product added to cart");
     res.redirect("/homePage");
   } catch (error) {
