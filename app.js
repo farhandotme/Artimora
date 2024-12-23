@@ -122,8 +122,18 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/addDetails", (req, res) => {
-  res.render("inputDetails");
+app.get("/addDetails", async (req, res) => {
+  try {
+    const orders = await orderModel
+      .find()
+      .populate("user")
+      .populate("items.product");
+    res.render("inputDetails", { orders });
+  } catch (error) {
+    console.error(error);
+    req.flash("error", "Something went wrong. Please try again.");
+    res.redirect("/");
+  }
 });
 
 app.get("/logout", (req, res) => {
@@ -236,7 +246,7 @@ app.post("/order", isloggedin, async (req, res) => {
   try {
     const newOrder = new orderModel({
       user: req.user.id,
-      items: cart.map(product => ({
+      items: cart.map((product) => ({
         product: product._id,
         name: product.name,
         price: product.price,
