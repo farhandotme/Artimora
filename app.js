@@ -13,7 +13,7 @@ const productModel = require("./models/productModel.js");
 const orderModel = require("./models/orderModel.js");
 const isloggedin = require("./middlewares/isloggedin.js");
 
-dotenv.config({ path: "./.env" }); // Load environment variables first
+dotenv.config({ path: "./.env" }); 
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -30,10 +30,8 @@ app.use(
 app.use(flash());
 app.use(cookieParser());
 
-// Connect to the database
 connectionDb();
 
-// Multer setup for file uploads
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
